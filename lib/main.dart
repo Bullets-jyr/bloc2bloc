@@ -19,7 +19,9 @@ class MyApp extends StatelessWidget {
           create: (context) => ColorBloc(),
         ),
         BlocProvider<CounterBloc>(
-          create: (context) => CounterBloc(),
+          create: (context) => CounterBloc(
+            colorBloc: context.read<ColorBloc>(),
+          ),
         ),
       ],
       child: MaterialApp(
@@ -40,7 +42,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: context.watch<ColorBloc>().state.color,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -50,11 +52,13 @@ class MyHomePage extends StatelessWidget {
                 'Change Color',
                 style: TextStyle(fontSize: 24.0),
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.read<ColorBloc>().add(ChangeColorEvent());
+              },
             ),
             SizedBox(height: 20.0),
             Text(
-              '0',
+              '${context.watch<CounterBloc>().state.counter}',
               style: TextStyle(
                 fontSize: 52.0,
                 fontWeight: FontWeight.bold,
@@ -67,7 +71,9 @@ class MyHomePage extends StatelessWidget {
                 'Increment Counter',
                 style: TextStyle(fontSize: 24.0),
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.read<CounterBloc>().add(ChangeCounterEvent());
+              },
             ),
           ],
         ),
